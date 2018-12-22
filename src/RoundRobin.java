@@ -11,7 +11,12 @@ public class RoundRobin
 		 */
 
 		Queue<Integer> processQueue = new LinkedList<>();
-		Queue<Object> burstTimeQueue = new LinkedList<>(Arrays.asList(burstTime));
+		Queue<Integer> burstTimeQueue = new LinkedList<>();
+
+		for (int e : burstTime) {
+			burstTimeQueue.add(e);
+		}
+
 		int[] waitingTimeArray = new int[burstTime.length];
 		int time = 0;
 
@@ -25,16 +30,16 @@ public class RoundRobin
 			int currentProcessId = processQueue.element();
 			int timeSpent = 0;
 
-			if ((int) burstTimeQueue.element() > quantum) {
-				int newBurstTime = (int) burstTimeQueue.element() - quantum;
+			if (burstTimeQueue.element() > quantum) {
+				int newBurstTime = burstTimeQueue.element() - quantum;
 				burstTimeQueue.remove();
 				burstTimeQueue.add(newBurstTime);
 				processQueue.add(processQueue.remove());
 
 				timeSpent += quantum;
 
-			} else if ((int) burstTimeQueue.element() <= quantum) {
-				timeSpent += (int)burstTimeQueue.remove();
+			} else if (burstTimeQueue.element() <= quantum) {
+				timeSpent += burstTimeQueue.remove();
 				processQueue.remove();
 			}
 
@@ -60,6 +65,13 @@ public class RoundRobin
 		 * Put your code here!
 		 */
 
+        int[] turnAroundTimeArray = new int[burstTime.length];
+
+        for (int i=0; i < turnAroundTimeArray.length; i++) {
+            turnAroundTimeArray[i] = burstTime[i] + waitingTime[i];
+        }
+
+        return turnAroundTimeArray;
 	}
 	
 	// Method that prints the results and calculates the average waiting and
