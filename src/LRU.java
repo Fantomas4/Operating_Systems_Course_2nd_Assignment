@@ -11,7 +11,7 @@ class LRU
 		 * Put your code in here!
 		 */
 
-		int result = 0;
+		int pageFaultsCount = 0;
 
 		Set<Integer> uniqNums = new TreeSet<>();
 
@@ -28,8 +28,63 @@ class LRU
 
 
 		int counter = 1;
-		
-		for (int i = memoryState.length; i < pages.length; i++) {
+
+		for (int p = 0; p < pages.length; p++) {
+
+			boolean hit = false;
+
+			// Check if a memory frame already contains the requested page
+			for (int f = 0; f < memoryState.length; f++) {
+				if (memoryState[f] == pages[p]) {
+					// Found a frame that contains the requested page
+					useHistory[pages[p]] = counter;
+					counter += 1;
+					hit = true;
+					break;
+				}
+			}
+
+			// If no memory frame contains the requested page
+			if (!hit) {
+				boolean storedPage = false;
+				pageFaultsCount += 1;
+				// First check whether there are any empty memory frames left to use
+				// in order to store the requested page
+				for (int f = 0; f < memoryState.length; f++) {
+					if (memoryState[f] == -1) {
+						// The frame is empty and can be used to store the requested page
+						memoryState[f] = pages[p];
+						useHistory[pages[p]] = counter;
+						counter += 1;
+						storedPage = true;
+						break;
+					}
+				}
+
+				// If no empty frames where found in the memory, the requested page
+				// will be saved in the memory frame that contains the LRU page
+				if (!storedPage) {
+					// Find the LRU page currently stored in the memory
+
+					int minPagePos = 0;
+					int minUseValue = useHistory[memoryState[0]];
+
+					for (int m = 0; m < memoryState.length; m++) {
+						if (useHistory[memoryState[m]] < minUseValue) {
+							minPagePos = m;
+							minUseValue = useHistory[memoryState[m]];
+						}
+					}
+
+					// replace the LRU page in memory with the page requested
+					memoryState[minPagePos] = pages[p];
+
+					useHistory[pages[p]] = counter;
+					counter += 1;
+
+				}
+			}
+
 
 
 
@@ -40,7 +95,7 @@ class LRU
 
 
 
-
+		return pageFaultsCount;
 
 	} 
 	
