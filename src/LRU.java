@@ -37,8 +37,6 @@ class LRU
 			for (int f = 0; f < memoryState.length; f++) {
 				if (memoryState[f] == pages[p]) {
 					// Found a frame that contains the requested page
-					useHistory[pages[p]] = counter;
-					counter += 1;
 					hit = true;
 					break;
 				}
@@ -54,8 +52,6 @@ class LRU
 					if (memoryState[f] == -1) {
 						// The frame is empty and can be used to store the requested page
 						memoryState[f] = pages[p];
-						useHistory[pages[p]] = counter;
-						counter += 1;
 						storedPage = true;
 						break;
 					}
@@ -78,18 +74,11 @@ class LRU
 
 					// replace the LRU page in memory with the page requested
 					memoryState[minPagePos] = pages[p];
-
-					useHistory[pages[p]] = counter;
-					counter += 1;
-
 				}
 			}
 
-
-
-
-
-
+            useHistory[pages[p]] = counter;
+            counter += 1;
 		}
 
 
