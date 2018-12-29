@@ -1,6 +1,4 @@
-import java.util.Arrays;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 class LRU
 { 
@@ -13,18 +11,19 @@ class LRU
 
 		int pageFaultsCount = 0;
 
-		Set<Integer> uniqNums = new TreeSet<>();
+        HashMap<Integer, Integer> useHistory = new HashMap<>();
 
-		for (int p : pages) {
-			uniqNums.add(p);
-		}
+        for (int page : pages) {
+            useHistory.put(page, 0);
+        }
+
 
 		int[] memoryState = new int[capacity];
 		// Fill all the array positions with -1,
 		// marking all the memory positions as empty.
 		Arrays.fill(memoryState, -1);
 
-		int[] useHistory = new int[uniqNums.size()];
+		//int[] useHistory = new int[uniqNums.size()];
 
 
 		int counter = 1;
@@ -63,12 +62,12 @@ class LRU
 					// Find the LRU page currently stored in the memory
 
 					int minPagePos = 0;
-					int minUseValue = useHistory[memoryState[0]];
+					int minUseValue = useHistory.get(memoryState[0]);
 
 					for (int m = 0; m < memoryState.length; m++) {
-						if (useHistory[memoryState[m]] < minUseValue) {
+						if (useHistory.get(memoryState[m]) < minUseValue) {
 							minPagePos = m;
-							minUseValue = useHistory[memoryState[m]];
+							minUseValue = useHistory.get(memoryState[m]);
 						}
 					}
 
@@ -77,8 +76,8 @@ class LRU
 				}
 			}
 
-            useHistory[pages[p]] = counter;
-            counter += 1;
+            useHistory.replace(pages[p], counter);
+			counter += 1;
 		}
 
 
@@ -95,8 +94,9 @@ class LRU
 		 * This is an array that holds the reference string for all
 		 * page requests.
 		 */
-		int pages[] = {5, 1, 0, 3, 2, 3, 0, 4, 2, 3, 0, 3, 5, 2}; 
-		
+//		int pages[] = {5, 1, 0, 3, 2, 3, 0, 4, 2, 3, 0, 3, 5, 2};
+		int pages[] = {7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1, 2};
+
 		// This is the number of available page frames
 		int memoryCapacity = 3; 
 		
